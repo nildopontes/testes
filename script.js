@@ -33,6 +33,7 @@ function sendData(pkt){
 }
 
 function onRecordingReady(pkt){
+   console.log(pkt);
    const context = new AudioContext();
    context.decodeAudioData(pkt).then(decoded => {
       const source = context.createBufferSource();
