@@ -33,14 +33,14 @@ function sendData(pkt){
 }
 
 function onRecordingReady(pkt){
-   console.log(pkt);
-   return;
+  // console.log(pkt);
+   //return;
    const context = new AudioContext();
    context.decodeAudioData(pkt).then(decoded => {
       const source = context.createBufferSource();
       source.buffer = decoded;
       source.connect(context.destination);
-      source.start(context.currentTime, 0, 6000);
+      source.start(0, 0, 6000);
    });
 }
 
