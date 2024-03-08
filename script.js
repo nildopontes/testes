@@ -20,9 +20,6 @@ var canPlay = false;
 function onLog(msg){
    console.log(`${msg}\n`);
 }
-function startPlayer(){
-   return;
-}
 function sendData(pkt){
    pkt.data.arrayBuffer().then(data => {
       clients.forEach(client => {
@@ -33,8 +30,6 @@ function sendData(pkt){
 }
 
 function onRecordingReady(pkt){
-  // console.log(pkt);
-   //return;
    const context = new AudioContext();
    context.decodeAudioData(pkt).then(decoded => {
       const source = context.createBufferSource();
