@@ -20,7 +20,9 @@ var packets = [];
 function onLog(msg){
    console.log(`${msg}\n`);
 }
- 
+function startPlayer(){
+   return;
+}
 function sendData(pkt){
    pkt.data.arrayBuffer().then(data => {
       clients.forEach(client => {
