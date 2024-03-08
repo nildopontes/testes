@@ -70,7 +70,7 @@ function addMember(id){
          client.dc = client.pc.createDataChannel(`_${client.id}`, {negotiated: true, id: 0});
          client.dc.binaryType = 'arraybuffer';
          client.dc.onmessage = packet => {
-            canPlay ? onRecordingReady(packet) : return;
+            canPlay ? onRecordingReady(packet) : 0;
             console.log(`Tamanho do pacote recebido: ${packet.data.byteLength}`);
          };
       }
