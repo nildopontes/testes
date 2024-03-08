@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 // [{id:'string', pc: new RTCPeerConnection(configuration), dc: rtcp.createDataChannel('dc', iptions)},...]
 var clients = [];
-var packets = [];
+var canPlay = false;
 function onLog(msg){
    console.log(`${msg}\n`);
 }
@@ -70,7 +70,7 @@ function addMember(id){
          client.dc = client.pc.createDataChannel(`_${client.id}`, {negotiated: true, id: 0});
          client.dc.binaryType = 'arraybuffer';
          client.dc.onmessage = packet => {
-            packets.push(packet.data);
+            canPlay ? onRecordingReady(packet) : return;
             console.log(`Tamanho do pacote recebido: ${packet.data.byteLength}`);
          };
       }
