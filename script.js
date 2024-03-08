@@ -34,6 +34,7 @@ function sendData(pkt){
 
 function onRecordingReady(pkt){
    console.log(pkt);
+   return;
    const context = new AudioContext();
    context.decodeAudioData(pkt).then(decoded => {
       const source = context.createBufferSource();
@@ -71,8 +72,10 @@ function addMember(id){
          client.dc = client.pc.createDataChannel(`_${client.id}`, {negotiated: true, id: 0});
          client.dc.binaryType = 'arraybuffer';
          client.dc.onmessage = packet => {
-            canPlay ? onRecordingReady(packet.data) : 0;
             console.log(`Tamanho do pacote recebido: ${packet.data.byteLength}`);
+            if(canPlay == true){
+               onRecordingReady(packet.data);
+            }
          };
       }
    });
