@@ -3,35 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!--
-    Seu Google client ID
-    Esse client ID foi criado no passo anterior
-  -->
-  <meta name="google-signin-client_id" content="613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com">
-
+  <script src="script.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <title>Google authentication - Exemplo 1</title>
 </head>
 <body>
-  <div class="container body-content">
-    <div class="box-login">
+  <div>
+    <div>
       <h2>Login</h2>
-
-      <!-- html do botão -->
-      <div id="meu-botao"></div>
-
+      <div id="g_id_onload" data-client_id="613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
+      <div class="g_id_signin" data-type="standard"></div>
       <hr/>
       <a href="javascript:void(0);" onclick="signOut();">Sign out</a>
     </div>
     <hr />
     <footer>
-      <p>&copy; Fábrica de Código</p>
+      <p>&copy; Nildo Pontes</p>
     </footer>
   </div>
-
-  <script src="script.js"></script>
-
-  <!--Google Platform Library-->
-  <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 </body>
 </html>
