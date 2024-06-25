@@ -1,16 +1,44 @@
 <!DOCTYPE html>
-<html>
-   <head>
-      <title>WebRTC Text Chat</title>
-      <meta charset="UTF-8"/>
-      <meta name="viewport" content="width=device-width, user-scalable=no">
-      <script src="https://cdn.scaledrone.com/scaledrone.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-      <script>eruda.init();</script>
-      <script src="script.js"></script>
-   </head>
-   <body>
-      <button onclick="startRecord()">Começar a gravar</button>
-      <button onclick="canPlay = true;">Play</button>
-   </body>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!--
+    Seu Google client ID
+    Esse client ID foi criado no passo anterior
+  -->
+  <meta name="google-signin-client_id" content="613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com">
+
+  <title>Google authentication - Exemplo 1</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.min.css">
+</head>
+<body>
+  <div class="container body-content">
+    <div class="box-login">
+      <h2>Login</h2>
+
+      <!-- html do botão -->
+      <div id="meu-botao"></div>
+
+      <hr/>
+      <a href="javascript:void(0);" onclick="signOut();">Sign out</a>
+    </div>
+    <hr />
+    <footer>
+      <p>&copy; Fábrica de Código</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!--Google Platform Library-->
+  <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+
+  <!--JQuery e Bootstrap - Não são obrigatórios para ao autenticação -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</body>
 </html>
