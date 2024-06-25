@@ -3,6 +3,7 @@
 */
 function handleCredentialResponse(googleUser) {
    console.log(googleUser);
+   console.log(googleUser.getBasicProfile());
 }
 
 /**
