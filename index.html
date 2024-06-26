@@ -29,7 +29,7 @@
         // NOTE: OAuth2 'scope' and 'client_id' parameters have moved to initTokenClient().
       })
       .then(function() {  // Load the Calendar API discovery document.
-        gapi.client.load('https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest');
+        gapi.client.load('https://www.googleapis.com/discovery/v1/apis/drive');
         gapiInited = true;
         checkBeforeStart();
       });
