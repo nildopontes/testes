@@ -48,6 +48,7 @@
                       throw(resp);
                    }
                    console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
+                   sessionStorage.setItem('tk', gapi.client.getToken().access_token);
                 },
             });
       gisInited = true;
@@ -55,13 +56,17 @@
     }
 
     function showEvents() {
+       if(typeof(sessionStorage.getItem('tk')) !== 'undefined'){
+          gapi.client.setToken({access_token: sessionStorage.getItem('tk')});
+          return;
+       }
       // Conditionally ask users to select the Google Account they'd like to use,
       // and explicitly obtain their consent to fetch their Calendar.
       // NOTE: To request an access token a user gesture is necessary.
       if (gapi.client.getToken() === null) {
         // Prompt the user to select a Google Account and asked for consent to share their data
         // when establishing a new session.
-        tokenClient.requestAccessToken({prompt: 'consent', access_type: 'offline'});
+        tokenClient.requestAccessToken({prompt: 'consent');
       } else {
         // Skip display of account chooser and consent dialog for an existing session.
         tokenClient.requestAccessToken({prompt: ''});
