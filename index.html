@@ -56,7 +56,7 @@
     }
 
     function showEvents() {
-       if(typeof(sessionStorage.getItem('tk')) !== 'undefined'){
+       if(sessionStorage.getItem('tk') !== null){
           gapi.client.setToken({access_token: sessionStorage.getItem('tk')});
           return;
        }
