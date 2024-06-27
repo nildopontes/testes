@@ -53,13 +53,9 @@
 
       tokenClient.callback = (resp) => {
         if (resp.error !== undefined) {
-          throw(resp);
+          //throw(resp);
+          console.log('Deu merda');
         }
-        const authInstance = window.gapi.auth2.getAuthInstance();
-        authInstance.grantOfflineAccess().then((res) => {
-            console.log(res);
-            this.data.refreshToken = res.code;
-         });
         // GIS has automatically updated gapi.client with the newly issued access token.
         console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
       }
