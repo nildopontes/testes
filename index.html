@@ -43,22 +43,18 @@
      tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: '613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com',
                 scope: 'https://www.googleapis.com/auth/drive.file',
-                callback: '',  // defined at request time
+                callback: resp => {
+                   if (resp.error !== undefined) {
+                      throw(resp);
+                   }
+                   console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
+                },
             });
       gisInited = true;
       checkBeforeStart();
     }
 
     function showEvents() {
-
-      tokenClient.callback = (resp) => {
-        if (resp.error !== undefined) {
-          throw(resp);
-        }
-        // GIS has automatically updated gapi.client with the newly issued access token.
-        console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
-      }
-
       // Conditionally ask users to select the Google Account they'd like to use,
       // and explicitly obtain their consent to fetch their Calendar.
       // NOTE: To request an access token a user gesture is necessary.
