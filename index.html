@@ -12,6 +12,7 @@
         client = google.accounts.oauth2.initTokenClient({
           client_id: '613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com',
           scope: 'https://www.googleapis.com/auth/drive.file',
+          prompt: '',
           callback: tokenResponse => {
             access_token = tokenResponse.access_token;
             console.log(access_token);
