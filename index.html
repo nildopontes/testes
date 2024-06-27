@@ -1,86 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta name="Cross-Origin-Opener-Policy" content="same-origin">
-  <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoad()"></script>
-  <script async defer src="https://accounts.google.com/gsi/client" onload="gisInit()"></script>
-</head>
-<body>
-  <h1>GAPI with GIS callbacks</h1>
-  <button id="showEventsBtn" onclick="showEvents();">Show Calendar</button><br><br>
-  <button id="revokeBtn" onclick="revokeToken();">Revoke access token</button>
-  <script>
-    let tokenClient;
-    let gapiInited;
-    let gisInited;
+  <head>
+    <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
+  </head>
+  <body>
+    <script>
+      var client;
+      var access_token;
 
-    document.getElementById("showEventsBtn").style.visibility="hidden";
-    document.getElementById("revokeBtn").style.visibility="hidden";
-
-    function checkBeforeStart() {
-       if (gapiInited && gisInited){
-          document.getElementById("showEventsBtn").style.visibility="visible";
-          document.getElementById("revokeBtn").style.visibility="visible";
-       }
-    }
-
-    function gapiInit() {
-      gapi.client.init({
-        // NOTE: OAuth2 'scope' and 'client_id' parameters have moved to initTokenClient().
-      })
-      .then(function() {  // Load the Drive API discovery document.
-        gapi.client.load('https://www.googleapis.com/discovery/v1/apis/drive/v3/rest');
-        gapiInited = true;
-        checkBeforeStart();
-      });
-    }
-
-    function gapiLoad() {
-        gapi.load('client', gapiInit)
-    }
-
-    function gisInit() {
-     tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: '613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com',
-                scope: 'https://www.googleapis.com/auth/drive.file',
-                callback: resp => {
-                   if (resp.error !== undefined) {
-                      throw(resp);
-                   }
-                   console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
-                   sessionStorage.setItem('tk', gapi.client.getToken().access_token);
-                },
-            });
-      gisInited = true;
-      checkBeforeStart();
-    }
-
-    function showEvents() {
-       if(sessionStorage.getItem('tk') !== null){
-          gapi.client.setToken({access_token: sessionStorage.getItem('tk')});
-          return;
-       }
-      // Conditionally ask users to select the Google Account they'd like to use,
-      // and explicitly obtain their consent to fetch their Calendar.
-      // NOTE: To request an access token a user gesture is necessary.
-      if (gapi.client.getToken() === null) {
-        // Prompt the user to select a Google Account and asked for consent to share their data
-        // when establishing a new session.
-        tokenClient.requestAccessToken({prompt: 'consent'});
-      } else {
-        // Skip display of account chooser and consent dialog for an existing session.
-        tokenClient.requestAccessToken({prompt: ''});
+      function initClient() {
+        client = google.accounts.oauth2.initTokenClient({
+          client_id: '613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/drive.file',
+          prompt: '',
+          callback: tokenResponse => {
+            access_token = tokenResponse.access_token;
+            console.log(access_token);
+          },
+        });
       }
-    }
-
-    function revokeToken() {
-      let cred = gapi.client.getToken();
-      if (cred !== null) {
-        google.accounts.oauth2.revoke(cred.access_token, () => {console.log('Revoked: ' + cred.access_token)});
-        gapi.client.setToken('');
-        document.getElementById("showEventsBtn").innerText = "Show Calendar";
+      function getToken() {
+        client.requestAccessToken();
       }
-    }
-  </script>
-</body>
+      function revokeToken() {
+        google.accounts.oauth2.revoke(access_token, () => {console.log('access token revoked')});
+      }
+      function loadCalendar() {
+        
+      }
+    </script>
+    <h1>Google Identity Services Authorization Token model</h1>
+    <button onclick="getToken();">Get access token</button><br><br>
+    <button onclick="loadCalendar();">Load Calendar</button><br><br>
+    <button onclick="revokeToken();">Revoke token</button>
+  </body>
 </html>
