@@ -18,7 +18,6 @@
 
     function checkBeforeStart() {
        if (gapiInited && gisInited){
-          // Start only when both gapi and gis are initialized.
           document.getElementById("showEventsBtn").style.visibility="visible";
           document.getElementById("revokeBtn").style.visibility="visible";
        }
@@ -42,7 +41,7 @@
     function gisInit() {
      tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: '613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com',
-                scope: 'https://www.googleapis.com/auth/drive.file',
+                scope: 'email profile https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid',
                 callback: '',  // defined at request time
             });
       gisInited = true;
@@ -57,12 +56,6 @@
         }
         // GIS has automatically updated gapi.client with the newly issued access token.
         console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
-
-        //gapi.client.calendar.events.list({ 'calendarId': 'primary' })
-        //.then(calendarAPIResponse => console.log(JSON.stringify(calendarAPIResponse)))
-        //.catch(err => console.log(err));
-
-        document.getElementById("showEventsBtn").innerText = "Refresh Calendar";
       }
 
       // Conditionally ask users to select the Google Account they'd like to use,
