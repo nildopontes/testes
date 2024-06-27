@@ -42,7 +42,7 @@
     function gisInit() {
      tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: '613616399292-i7njqr6ek4t8grt7ft3c3e6airkldn3e.apps.googleusercontent.com',
-                scope: 'email profile https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid',
+                scope: 'https://www.googleapis.com/auth/drive.file',
                 callback: '',  // defined at request time
             });
       gisInited = true;
@@ -55,6 +55,11 @@
         if (resp.error !== undefined) {
           throw(resp);
         }
+        const authInstance = window.gapi.auth2.getAuthInstance();
+        authInstance.grantOfflineAccess().then((res) => {
+            console.log(res);
+            this.data.refreshToken = res.code;
+         });
         // GIS has automatically updated gapi.client with the newly issued access token.
         console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
       }
