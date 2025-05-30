@@ -53,7 +53,14 @@
       </script>
       <title>Jogo</title>
       <style>
+         html, body{
+            overflow:hidden;
+            border:0;
+            margin:0;
+            padding:0;
+         }
          #wrap{
+            position:relative;
             width:100vw;
             height:100vh;
             padding:0;
@@ -62,12 +69,13 @@
             box-sizing:border-box;
             background:white;
             font-size:15px;
+            overflow:hidden;
          }
          #photo{
             position:absolute;
             top:0;
             left:0;
-            width:450px;
+            width:300px;
          }
       </style>
    </head>
