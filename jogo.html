@@ -41,9 +41,18 @@
             function endTouch(){
                console.log('end');
                s = false;
-               registerAnimation('assf', parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10),parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10),0,0);
-               registerClass('ansf', 'assf');
-               addAnimation(photo, 'ansf', 0, 0);
+               let x = parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10);
+               let y = parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10);
+               if(distanciaEntrePontos(x, y, 400, 100) > 30){
+                  registerAnimation('assf', parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10),parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10),0,0);
+                  registerClass('ansf', 'assf');
+                  addAnimation(photo, 'ansf', 0, 0);
+               }else{
+                  registerAnimation('assf', parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10),parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10),400,100);
+                  registerClass('ansf', 'assf');
+                  addAnimation(photo, 'ansf', 400, 100);
+                  alert('Parabéns, Gatinha de Botas!');
+               }
             }
             //photo.addEventListener('mousedown', e => startTouch(e)); // for mouse
             //photo.addEventListener('mouseup', () => endTouch()); // for mouse
@@ -87,6 +96,11 @@
             element.style.left = `${newLeft}px`;
             element.style.top = `${newTop}px`;
          }
+         function distanciaEntrePontos(x1, y1, x2, y2){
+            let dx = x2 - x1;
+            let dy = y2 - y1;
+            return Math.sqrt(dx**2 + dy**2);
+         }
       </script>
       <title>Jogo</title>
       <style id="animation"></style>
@@ -113,14 +127,24 @@
             position:absolute;
             top:0;
             left:0;
-            width:300px;
+            width:50px;
+            z-index:500;
          }
-         
+         #destination{
+            width:50px;
+            height:127px;
+            border:1px dotted gray;
+            position:absolute;
+            top:100px;
+            left:400px;
+            !z-index:5010;
+         }
       </style>
    </head>
    <body>
       <div id="wrap">
          <img id="photo" src="mamadeira.png"/>
+         <div id="destination"></div>
       </div>
    </body>
 </html>
