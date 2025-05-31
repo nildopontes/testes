@@ -2,7 +2,7 @@
 <html lang="pt-br">
    <head>
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
       <!--<link rel="stylesheet" href="style.css">-->
       <link rel="icon" href="favicon.png" type="image/png">
       <!--<script src="auth.js"></script>-->
@@ -41,6 +41,9 @@
             function endTouch(){
                console.log('end');
                s = false;
+               registerAnimation('assf', parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10),parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10),0,0);
+               registerClass('ansf', 'assf');
+               addAnimation(photo, 'ansf', 0, 0);
             }
             //photo.addEventListener('mousedown', e => startTouch(e)); // for mouse
             //photo.addEventListener('mouseup', () => endTouch()); // for mouse
@@ -48,10 +51,45 @@
             photo.addEventListener('touchstart', e => startTouch(e));
             photo.addEventListener('touchend', () => endTouch());
             photo.addEventListener('touchmove', e => moveTouch(e));
+            photo.addEventListener('animationend', e => {
+               document.getElementById(e.target.id).removeAttribute('class');
+               let mySheet = document.getElementById('animation').sheet;
+               mySheet.deleteRule(0);
+               mySheet.deleteRule(0);
+            });
             photo.ondragstart = () => false;
          });
+         function registerClass(className, animationName){
+            let style = `.${className}{
+               animation-duration:0.4s;
+               animation-name:${animationName};
+               animation-fill-mode:none;
+            }`;
+            let mySheet = document.getElementById('animation').sheet;
+            return mySheet.insertRule(style);
+         }
+         function registerAnimation(name, currentLeft, currentTop, newLeft, newTop){
+            let = style = `@keyframes ${name}{
+               from{
+                  left:${currentLeft}px;
+                  top:${currentTop}px;
+               }
+               to{
+                  left:${newLeft}px;
+                  top:${newTop}px;
+               }
+            }`;
+            let mySheet = document.getElementById('animation').sheet;
+            mySheet.insertRule(style);
+         }
+         function addAnimation(element, className, newLeft, newTop){
+            element.classList.add(className);
+            element.style.left = `${newLeft}px`;
+            element.style.top = `${newTop}px`;
+         }
       </script>
       <title>Jogo</title>
+      <style id="animation"></style>
       <style>
          html, body{
             overflow:hidden;
@@ -77,6 +115,7 @@
             left:0;
             width:300px;
          }
+         
       </style>
    </head>
    <body>
