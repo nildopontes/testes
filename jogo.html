@@ -7,7 +7,7 @@
       <link rel="icon" href="favicon.png" type="image/png">
       <!--<script src="auth.js"></script>-->
       <script>
-         let s = false;
+         let moving = false;
          let refX, refY;
          let initX, initY;
          window.addEventListener('load', event => {
@@ -23,43 +23,49 @@
                console.log('start');
                //refX = event.clientX;  for mouse
                //refY = event.clientY;  for mouse
+               let element = document.getElementById(event.target.id);
                refX = event.changedTouches[0].clientX;
                refY = event.changedTouches[0].clientY;
-               initX = parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10);
-               initY = parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10);
-               s = true;
+               initX = parseInt(window.getComputedStyle(element).getPropertyValue('left'), 10);
+               initY = parseInt(window.getComputedStyle(element).getPropertyValue('top'), 10);
+               moving = true;
             }
             function moveTouch(event){
                console.log('move');
-               if(s === true){
+               if(moving === true){
+                  let element = document.getElementById(event.target.id);
                   //photo.style.left = (initX + event.clientX - refX) + 'px';  for mouse
                   //photo.style.top = (initY + event.clientY - refY) + 'px';  for mouse
-                  photo.style.left = (initX + event.changedTouches[0].clientX - refX) + 'px';
-                  photo.style.top = (initY + event.changedTouches[0].clientY - refY) + 'px';
+                  element.style.left = (initX + event.changedTouches[0].clientX - refX) + 'px';
+                  element.style.top = (initY + event.changedTouches[0].clientY - refY) + 'px';
                }
             }
-            function endTouch(){
+            function endTouch(event){
                console.log('end');
-               s = false;
+               moving = false;
                let x = parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10);
                let y = parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10);
-               if(distanciaEntrePontos(x, y, 400, 100) > 30){
-                  registerAnimation('assf', parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10),parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10),0,0);
+               let element = document.getElementById(event.target.id);
+               if(distanceBetweenPoints(x, y, 400, 100) > 30){
+                  registerAnimation('assf', parseInt(window.getComputedStyle(element).getPropertyValue('left'), 10), parseInt(window.getComputedStyle(element).getPropertyValue('top'), 10),0,0);
                   registerClass('ansf', 'assf');
                   addAnimation(photo, 'ansf', 0, 0);
-               }else{
-                  registerAnimation('assf', parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10),parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10),400,100);
+               }else{ // sucess
+                  registerAnimation('assf', parseInt(window.getComputedStyle(element).getPropertyValue('left'), 10), parseInt(window.getComputedStyle(element).getPropertyValue('top'), 10),400,100);
                   registerClass('ansf', 'assf');
                   addAnimation(photo, 'ansf', 400, 100);
                   alert('Parabéns, Gatinha de Botas!');
+                  element.removeEventListener('touchstart', startTouch, false);
+                  element.removeEventListener('touchend', endTouch, false);
+                  element.removeEventListener('touchmove', moveTouch, false);
                }
             }
-            //photo.addEventListener('mousedown', e => startTouch(e)); // for mouse
-            //photo.addEventListener('mouseup', () => endTouch()); // for mouse
-            //photo.addEventListener('mousemove', e => moveTouch(e)); // for mouse
-            photo.addEventListener('touchstart', e => startTouch(e));
-            photo.addEventListener('touchend', () => endTouch());
-            photo.addEventListener('touchmove', e => moveTouch(e));
+            //photo.addEventListener('mousedown', startTouch); // for mouse
+            //photo.addEventListener('mouseup', endTouch); // for mouse
+            //photo.addEventListener('mousemove', moveTouch); // for mouse
+            photo.addEventListener('touchstart', startTouch);
+            photo.addEventListener('touchend', endTouch);
+            photo.addEventListener('touchmove', moveTouch);
             photo.addEventListener('animationend', e => {
                document.getElementById(e.target.id).removeAttribute('class');
                let mySheet = document.getElementById('animation').sheet;
@@ -96,10 +102,14 @@
             element.style.left = `${newLeft}px`;
             element.style.top = `${newTop}px`;
          }
-         function distanciaEntrePontos(x1, y1, x2, y2){
+         function distanceBetweenPoints(x1, y1, x2, y2){
             let dx = x2 - x1;
             let dy = y2 - y1;
             return Math.sqrt(dx**2 + dy**2);
+         }
+         function playSound(name){
+            var sound = new Audio(name);
+            sound.addEventListener('canplaythrough', () => sound.play());
          }
       </script>
       <title>Jogo</title>
