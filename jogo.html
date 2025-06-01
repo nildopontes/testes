@@ -11,7 +11,6 @@
          let refX, refY;
          let initX, initY;
          window.addEventListener('load', event => {
-            window.screen.orientation.lock('landscape');
             document.body.onclick = () => {
                /*if(!document.fullscreenElement){
                   wrap.requestFullscreen();
@@ -112,6 +111,7 @@
             margin:0;
             padding:0;
             overscroll-behavior-x:none;
+            overscroll-behavior-y:none;
          }
          #wrap{
             position:relative;
