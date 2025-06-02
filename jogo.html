@@ -151,14 +151,14 @@
             stepQuantity++;
          }
          function start(){
-            //$('wrap').requestFullscreen().then(() => {
-               //if(!screen.orientation.type.includes('landscape')){
-               //   screen.orientation.lock('landscape').catch(err => {
-               //      /*Decidir aqui o que fazer se for necessário girar a tela e o acesso for negado*/
-               //   });
-               //}
+            $('wrap').requestFullscreen().then(() => {
+               if(!screen.orientation.type.includes('landscape')){
+                  screen.orientation.lock('landscape').catch(err => {
+                     /*Decidir aqui o que fazer se for necessário girar a tela e o acesso for negado*/
+                  });
+               }
                $('cover').style.display = 'none';
-            //});
+            });
          }
          function success(){
             alert('Parabéns! Você venceu!'); // Exibir uma tela amigável
