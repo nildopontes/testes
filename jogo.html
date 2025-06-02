@@ -7,35 +7,22 @@
       <link rel="icon" href="favicon.png" type="image/png">
       <!--<script src="auth.js"></script>-->
       <script>
-         window.addEventListener('load', event => {
-            document.body.onclick = () => {
-               /*if(!document.fullscreenElement){
-                  wrap.requestFullscreen();
-               }else{
-                  document.exitFullscreen();
-               }*/
-               /*Gere uma imagem ilustrativa, tipo animação, de um cão. As linhas devem ser uniformes e definidas. As cores devem ser uniformes. O fundo por trás da imagem deve ser preenchido por uma cor uniforme que não faça parte do desenho.*/
-            };
+         var step = 0;
+         var stepQuantity = 0;
+         window.addEventListener('load', event => { 
+            /*Gere uma imagem ilustrativa, tipo animação, de um cão. As linhas devem ser uniformes e definidas. As cores devem ser uniformes. O fundo por trás da imagem deve ser preenchido por uma cor uniforme que não faça parte do desenho.*/
             $('cover').addEventListener('click', start);
-            /*photo.addEventListener('mousedown', startTouch); // for mouse
-            photo.addEventListener('mouseup', endTouch); // for mouse
-            photo.addEventListener('mousemove', moveTouch); // for mouse
-            photo.addEventListener('touchstart', startTouch);
-            photo.addEventListener('touchend', endTouch);
-            photo.addEventListener('touchmove', moveTouch);
-            photo.addEventListener('animationend', e => {});
-            photo.ondragstart = () => false;*/
-            createObject('mama', 'mamadeira.png', 'mamadeiraS.png', 50, 'audio.mp3', 0, 0, 400, 100);
+            loadNewLevel();
          });
          function startTouch(event){
             console.log('start');
             let element = $(event.target.id);
-            //element.dataset.refX = event.clientX; for mouse
-            //element.dataset.refY = event.clientY; for mouse
-            playSound('touch.mp3');
             element.dataset.refX = event.changedTouches[0].clientX;
             element.dataset.refY = event.changedTouches[0].clientY;
+            element.style.zIndex = 1;
+            playSound('touch.mp3');
             element.dataset.moving = 'yes';
+            event.preventDefault();
          }
          function moveTouch(event){
             console.log('move');
@@ -45,8 +32,6 @@
             let initX = parseInt(element.dataset.initX, 10);
             let initY = parseInt(element.dataset.initY, 10);
             if(element.dataset.moving == 'yes'){
-               //element.style.left = (initX + event.clientX - refX) + 'px';  for mouse
-               //element.style.top = (initY + event.clientY - refY) + 'px';  for mouse
                element.style.left = (initX + event.changedTouches[0].clientX - refX) + 'px';
                element.style.top = (initY + event.changedTouches[0].clientY - refY) + 'px';
             }
@@ -61,7 +46,7 @@
             let successX = parseInt(element.dataset.successX, 10);
             let successY = parseInt(element.dataset.successY, 10);
             element.dataset.moving = 'no';
-            if(distanceBetweenPoints(x, y, successX, successY) > 30){
+            if(distanceBetweenPoints(x, y, successX, successY) > 30){ // fail
                registerAnimation(`${event.target.id}-animation`, x, y, initX, initY);
                registerClassAnimation(`${event.target.id}-animation-class`, `${event.target.id}-animation`);
                addAnimation(element, `${event.target.id}-animation-class`, initX, initY);
@@ -73,7 +58,12 @@
                element.removeEventListener('touchend', endTouch, false);
                element.removeEventListener('touchmove', moveTouch, false);
                playSound(element.dataset.soundSuccess);
+               step++;
+               if(step == stepQuantity){
+                  success();
+               }
             }
+            element.style.zIndex = 0;
          }
          function registerClassAnimation(className, animationName){
             let style = `.${className}{
@@ -117,34 +107,29 @@
             return document.getElementById(id);
          }
          /*
-         imgName: nome da imagem, deve ser único e será usado como base para a definição das classes CSS.
-         imgSrc: endereço da imagem do objeto.
-         imgShadowSrc: endereço da imagem da sombra do objeto.
-         imgWidth: largura da imagem do objeto e da sombra
-         soundSuccessSrc: endereço do áudio que será tocado em caso de sucesso.
-         startX: Posição inicial da imagem do objeto no eixo X. 
-         startY: Posição inicial da imagem do objeto no eixo Y.
-         endX: Posição da imagem da sombra do objeto no eixo X.
-         endY: Posição da imagem da sombra do objeto no eixo Y.
+         imgName (String): nome da imagem, deve ser único e será usado como base para a definição das classes CSS.
+         imgSrc (String): endereço da imagem do objeto.
+         imgWidth (Interger): largura da imagem do objeto
+         soundSuccessSrc (String): endereço do áudio que será tocado em caso de sucesso.
+         startX (Interger): Posição inicial da imagem do objeto no eixo X.
+         startY (Interger): Posição inicial da imagem do objeto no eixo Y.
+         endX (Interger): Posição da imagem da sombra do objeto no eixo X.
+         endY (Interger): Posição da imagem da sombra do objeto no eixo Y.
          */
-         function createObject(imgName, imgSrc, imgShadowSrc, imgWidth, soundSuccessSrc, startX, startY, endX, endY){
+         function createObject(imgName, imgSrc, imgWidth, soundSuccessSrc, startX, startY, endX, endY){
             let object = document.createElement('img');
             let shadow = document.createElement('img');
             object.setAttribute('src', imgSrc);
             object.setAttribute('id', imgName);
             object.dataset.successX = endX;
             object.dataset.successY = endY;
-            object.dataset.refX = '';
-            object.dataset.refY = '';
             object.dataset.initX = startX;
             object.dataset.initY = startY;
             object.dataset.moving = 'no';
             object.dataset.soundSuccess = soundSuccessSrc;
-            object.style.position = 'absolute';
             object.style.top = `${startY}px`;
             object.style.left = `${startX}px`;
             object.style.width = `${imgWidth}px`;
-            object.style.zIndex = 1;
             object.addEventListener('touchstart', startTouch);
             object.addEventListener('touchend', endTouch);
             object.addEventListener('touchmove', moveTouch);
@@ -155,22 +140,43 @@
                mySheet.deleteRule(0);
                mySheet.deleteRule(0);
             });
-            object.ondragstart = () => false;
-            shadow.setAttribute('src', imgShadowSrc);
-            shadow.style.position = 'absolute';
+            shadow.setAttribute('src', imgSrc);
             shadow.style.top = `${endY}px`;
             shadow.style.left = `${endX}px`;
             shadow.style.width = `${imgWidth}px`;
+            shadow.style.zIndex = '-1';
+            shadow.style.filter = 'contrast(0%) opacity(0.4)';
             $('wrap').appendChild(object);
             $('wrap').appendChild(shadow);
+            stepQuantity++;
          }
          function start(){
-            $('cover').style.display = 'none';
-            $('wrap').requestFullscreen();
-            screen.orientation.lock('landscape');
+            $('wrap').requestFullscreen().then(() => {
+               if(!screen.orientation.type.includes('landscape')){
+                  screen.orientation.lock('landscape').catch(err => {
+                     /*Decidir aqui o que fazer se for necessário girar a tela e o acesso for negado*/
+                  });
+               }
+               $('cover').style.display = 'none';
+            });
+         }
+         function success(){
+            alert('Parabéns! Você venceu!'); // Exibir uma tela amigável
+            stepQuantity = 0;
+            step = 0;
+            removeAll();
+            loadNewLevel();
+         }
+         function removeAll(){
+            let objects = document.querySelectorAll('#wrap img');
+            objects.forEach(obj => obj.remove());
+         }
+         function loadNewLevel(){
+            createObject('mama', 'mamadeira.png', 40, 'audio.mp3', 0, 0, 500, 100);
+            createObject('teta', 'mamadeira.png', 30, 'audio.mp3', 0, 150, 500, 220);
+            createObject('rabo', 'mamadeira.png', 20, 'audio.mp3', 0, 250, 500, 10);
          }
       </script>
-      <title>Jogo</title>
       <style id="animation"></style>
       <style>
          html, body{
@@ -178,9 +184,12 @@
             border:0;
             margin:0;
             padding:0;
-            user-select:none;
             overscroll-behavior-x:none;
             overscroll-behavior-y:none;
+            font-family:Helvetica;
+         }
+         *{
+            user-select:none;
          }
          #wrap{
             position:relative;
@@ -193,6 +202,9 @@
             background:white;
             font-size:15px;
             overflow:hidden;
+         }
+         #wrap>img{
+            position:absolute;
          }
          #cover{
             position:fixed;
@@ -213,9 +225,9 @@
             line-height:100vh;
             text-align:center;
             font-weight:bold;
-            font-family:'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
          }
       </style>
+      <title>Jogo</title>
    </head>
    <body>
       <div id="wrap"></div>
