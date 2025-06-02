@@ -19,7 +19,7 @@
             let element = $(event.target.id);
             element.dataset.refX = event.changedTouches[0].clientX;
             element.dataset.refY = event.changedTouches[0].clientY;
-            element.style.zIndex = 1;
+            element.style.zIndex = 2;
             playSound('touch.mp3');
             element.dataset.moving = 'yes';
             event.preventDefault();
@@ -63,14 +63,14 @@
                   success();
                }
             }
-            element.style.zIndex = 0;
+            element.style.zIndex = 1;
          }
          function registerClassAnimation(className, animationName){
             let style = `.${className}{
                animation-duration:0.4s;
                animation-name:${animationName};
                animation-fill-mode:none;
-               z-index:1;
+               z-index:2;
             }`;
             let mySheet = $('animation').sheet;
             return mySheet.insertRule(style);
@@ -144,21 +144,21 @@
             shadow.style.top = `${endY}px`;
             shadow.style.left = `${endX}px`;
             shadow.style.width = `${imgWidth}px`;
-            shadow.style.zIndex = '-1';
+            shadow.style.zIndex = 1;
             shadow.style.filter = 'contrast(0%) opacity(0.4)';
             $('wrap').appendChild(object);
             $('wrap').appendChild(shadow);
             stepQuantity++;
          }
          function start(){
-            $('wrap').requestFullscreen().then(() => {
-               if(!screen.orientation.type.includes('landscape')){
-                  screen.orientation.lock('landscape').catch(err => {
-                     /*Decidir aqui o que fazer se for necessário girar a tela e o acesso for negado*/
-                  });
-               }
+            //$('wrap').requestFullscreen().then(() => {
+               //if(!screen.orientation.type.includes('landscape')){
+               //   screen.orientation.lock('landscape').catch(err => {
+               //      /*Decidir aqui o que fazer se for necessário girar a tela e o acesso for negado*/
+               //   });
+               //}
                $('cover').style.display = 'none';
-            });
+            //});
          }
          function success(){
             alert('Parabéns! Você venceu!'); // Exibir uma tela amigável
@@ -171,10 +171,18 @@
             let objects = document.querySelectorAll('#wrap img');
             objects.forEach(obj => obj.remove());
          }
+         function genStr(){ // for test
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            let resultado = '';
+            for(let i = 0; i < 5; i++){
+              resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+            return resultado;
+         }
          function loadNewLevel(){
-            createObject('mama', 'mamadeira.png', 40, 'audio.mp3', 0, 0, 500, 100);
-            createObject('teta', 'mamadeira.png', 30, 'audio.mp3', 0, 150, 500, 220);
-            createObject('rabo', 'mamadeira.png', 20, 'audio.mp3', 0, 250, 500, 10);
+            createObject(genStr(), 'mamadeira.png', 40, 'audio.mp3', 0, 0, 500, 100);
+            createObject(genStr(), 'mamadeira.png', 30, 'audio.mp3', 0, 150, 500, 220);
+            createObject(genStr(), 'mamadeira.png', 20, 'audio.mp3', 0, 250, 500, 10);
          }
       </script>
       <style id="animation"></style>
