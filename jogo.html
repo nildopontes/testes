@@ -7,9 +7,6 @@
       <link rel="icon" href="favicon.png" type="image/png">
       <!--<script src="auth.js"></script>-->
       <script>
-         let moving = false;
-         let refX, refY;
-         let initX, initY;
          window.addEventListener('load', event => {
             document.body.onclick = () => {
                /*if(!document.fullscreenElement){
@@ -17,40 +14,37 @@
                }else{
                   document.exitFullscreen();
                }*/
-               /*Gere uma imagem ilustrativa, tipo animação, de um cão. As linhas devem ser uniformes e definidas. As cores devem ser uniformes. O fundo por trás da imagem deve ser branco.*/
+               /*Gere uma imagem ilustrativa, tipo animação, de um cão. As linhas devem ser uniformes e definidas. As cores devem ser uniformes. O fundo por trás da imagem deve ser preenchido por uma cor uniforme que não faça parte do desenho.*/
             };
-            //photo.addEventListener('mousedown', startTouch); // for mouse
-            //photo.addEventListener('mouseup', endTouch); // for mouse
-            //photo.addEventListener('mousemove', moveTouch); // for mouse
-            /*photo.addEventListener('touchstart', startTouch);
+            $('cover').addEventListener('click', start);
+            /*photo.addEventListener('mousedown', startTouch); // for mouse
+            photo.addEventListener('mouseup', endTouch); // for mouse
+            photo.addEventListener('mousemove', moveTouch); // for mouse
+            photo.addEventListener('touchstart', startTouch);
             photo.addEventListener('touchend', endTouch);
             photo.addEventListener('touchmove', moveTouch);
-            photo.addEventListener('animationend', e => {
-               let element = $(e.target.id);
-               element.classList.remove(`${event.target.id}-animation-class`);
-               let mySheet = $('animation').sheet;
-               mySheet.deleteRule(0);
-               mySheet.deleteRule(0);
-            });
+            photo.addEventListener('animationend', e => {});
             photo.ondragstart = () => false;*/
             createObject('mama', 'mamadeira.png', 'mamadeiraS.png', 50, 'audio.mp3', 0, 0, 400, 100);
          });
          function startTouch(event){
             console.log('start');
-            //refX = event.clientX;  for mouse
-            //refY = event.clientY;  for mouse
-            playSound('touch.mp3');
             let element = $(event.target.id);
-            refX = event.changedTouches[0].clientX;
-            refY = event.changedTouches[0].clientY;
-            initX = parseInt(window.getComputedStyle(element).left, 10);
-            initY = parseInt(window.getComputedStyle(element).top, 10);
-            moving = true;
+            //element.dataset.refX = event.clientX; for mouse
+            //element.dataset.refY = event.clientY; for mouse
+            playSound('touch.mp3');
+            element.dataset.refX = event.changedTouches[0].clientX;
+            element.dataset.refY = event.changedTouches[0].clientY;
+            element.dataset.moving = 'yes';
          }
          function moveTouch(event){
             console.log('move');
-            if(moving === true){
-               let element = $(event.target.id);
+            let element = $(event.target.id);
+            let refX = parseInt(element.dataset.refX, 10);
+            let refY = parseInt(element.dataset.refY, 10);
+            let initX = parseInt(element.dataset.initX, 10);
+            let initY = parseInt(element.dataset.initY, 10);
+            if(element.dataset.moving == 'yes'){
                //element.style.left = (initX + event.clientX - refX) + 'px';  for mouse
                //element.style.top = (initY + event.clientY - refY) + 'px';  for mouse
                element.style.left = (initX + event.changedTouches[0].clientX - refX) + 'px';
@@ -59,18 +53,22 @@
          }
          function endTouch(event){
             console.log('end');
-            moving = false;
             let element = $(event.target.id);
             let x = parseInt(window.getComputedStyle(element).left, 10);
             let y = parseInt(window.getComputedStyle(element).top, 10);
-            if(distanceBetweenPoints(x, y, parseInt(element.dataset.successX, 10), parseInt(element.dataset.successY, 10)) > 30){
-               registerAnimation(`${event.target.id}-animation`, parseInt(window.getComputedStyle(element).left, 10), parseInt(window.getComputedStyle(element).top, 10), initX, initY);
+            let initX = parseInt(element.dataset.initX, 10);
+            let initY = parseInt(element.dataset.initY, 10);
+            let successX = parseInt(element.dataset.successX, 10);
+            let successY = parseInt(element.dataset.successY, 10);
+            element.dataset.moving = 'no';
+            if(distanceBetweenPoints(x, y, successX, successY) > 30){
+               registerAnimation(`${event.target.id}-animation`, x, y, initX, initY);
                registerClassAnimation(`${event.target.id}-animation-class`, `${event.target.id}-animation`);
                addAnimation(element, `${event.target.id}-animation-class`, initX, initY);
             }else{ // sucess
-               registerAnimation(`${event.target.id}-animation`, parseInt(window.getComputedStyle(element).left, 10), parseInt(window.getComputedStyle(element).top, 10), parseInt(element.dataset.successX, 10), parseInt(element.dataset.successY, 10));
+               registerAnimation(`${event.target.id}-animation`, x, y, successX, successY);
                registerClassAnimation(`${event.target.id}-animation-class`, `${event.target.id}-animation`);
-               addAnimation(element, `${event.target.id}-animation-class`, parseInt(element.dataset.successX, 10), parseInt(element.dataset.successY, 10));
+               addAnimation(element, `${event.target.id}-animation-class`, successX, successY);
                element.removeEventListener('touchstart', startTouch, false);
                element.removeEventListener('touchend', endTouch, false);
                element.removeEventListener('touchmove', moveTouch, false);
@@ -134,9 +132,14 @@
             let shadow = document.createElement('img');
             object.setAttribute('src', imgSrc);
             object.setAttribute('id', imgName);
-            object.setAttribute('data-success-x', endX);
-            object.setAttribute('data-success-y', endY);
-            object.setAttribute('data-sound-success', soundSuccessSrc);
+            object.dataset.successX = endX;
+            object.dataset.successY = endY;
+            object.dataset.refX = '';
+            object.dataset.refY = '';
+            object.dataset.initX = startX;
+            object.dataset.initY = startY;
+            object.dataset.moving = 'no';
+            object.dataset.soundSuccess = soundSuccessSrc;
             object.style.position = 'absolute';
             object.style.top = `${startY}px`;
             object.style.left = `${startX}px`;
@@ -160,6 +163,11 @@
             shadow.style.width = `${imgWidth}px`;
             $('wrap').appendChild(object);
             $('wrap').appendChild(shadow);
+         }
+         function start(){
+            $('cover').style.display = 'none';
+            $('wrap').requestFullscreen();
+            screen.orientation.lock('landscape');
          }
       </script>
       <title>Jogo</title>
@@ -197,17 +205,20 @@
             margin:0;
             border:none;
             box-sizing:border-box;
-            background:green;
+            background:url('splash4.png');
+            background-position:center;
             font-size:45px;
-            color:white;
+            color:green;
             overflow:hidden;
             line-height:100vh;
             text-align:center;
+            font-weight:bold;
+            font-family:'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
          }
       </style>
    </head>
    <body>
       <div id="wrap"></div>
-      <div id="cover" onclick="this.style.display = 'none'; wrap.requestFullscreen();">Toque para iniciar</div>
+      <div id="cover">INICIAR</div>
    </body>
 </html>
