@@ -19,68 +19,72 @@
                }*/
                /*Gere uma imagem ilustrativa, tipo animação, de um cão. As linhas devem ser uniformes e definidas. As cores devem ser uniformes. O fundo por trás da imagem deve ser branco.*/
             };
-            function startTouch(event){
-               console.log('start');
-               //refX = event.clientX;  for mouse
-               //refY = event.clientY;  for mouse
-               let element = document.getElementById(event.target.id);
-               refX = event.changedTouches[0].clientX;
-               refY = event.changedTouches[0].clientY;
-               initX = parseInt(window.getComputedStyle(element).getPropertyValue('left'), 10);
-               initY = parseInt(window.getComputedStyle(element).getPropertyValue('top'), 10);
-               moving = true;
-            }
-            function moveTouch(event){
-               console.log('move');
-               if(moving === true){
-                  let element = document.getElementById(event.target.id);
-                  //photo.style.left = (initX + event.clientX - refX) + 'px';  for mouse
-                  //photo.style.top = (initY + event.clientY - refY) + 'px';  for mouse
-                  element.style.left = (initX + event.changedTouches[0].clientX - refX) + 'px';
-                  element.style.top = (initY + event.changedTouches[0].clientY - refY) + 'px';
-               }
-            }
-            function endTouch(event){
-               console.log('end');
-               moving = false;
-               let x = parseInt(window.getComputedStyle(photo).getPropertyValue('left'), 10);
-               let y = parseInt(window.getComputedStyle(photo).getPropertyValue('top'), 10);
-               let element = document.getElementById(event.target.id);
-               if(distanceBetweenPoints(x, y, 400, 100) > 30){
-                  registerAnimation('assf', parseInt(window.getComputedStyle(element).getPropertyValue('left'), 10), parseInt(window.getComputedStyle(element).getPropertyValue('top'), 10),0,0);
-                  registerClass('ansf', 'assf');
-                  addAnimation(photo, 'ansf', 0, 0);
-               }else{ // sucess
-                  registerAnimation('assf', parseInt(window.getComputedStyle(element).getPropertyValue('left'), 10), parseInt(window.getComputedStyle(element).getPropertyValue('top'), 10),400,100);
-                  registerClass('ansf', 'assf');
-                  addAnimation(photo, 'ansf', 400, 100);
-                  alert('Parabéns, Gatinha de Botas!');
-                  element.removeEventListener('touchstart', startTouch, false);
-                  element.removeEventListener('touchend', endTouch, false);
-                  element.removeEventListener('touchmove', moveTouch, false);
-               }
-            }
             //photo.addEventListener('mousedown', startTouch); // for mouse
             //photo.addEventListener('mouseup', endTouch); // for mouse
             //photo.addEventListener('mousemove', moveTouch); // for mouse
-            photo.addEventListener('touchstart', startTouch);
+            /*photo.addEventListener('touchstart', startTouch);
             photo.addEventListener('touchend', endTouch);
             photo.addEventListener('touchmove', moveTouch);
             photo.addEventListener('animationend', e => {
-               document.getElementById(e.target.id).removeAttribute('class');
-               let mySheet = document.getElementById('animation').sheet;
+               let element = $(e.target.id);
+               element.classList.remove(`${event.target.id}-animation-class`);
+               let mySheet = $('animation').sheet;
                mySheet.deleteRule(0);
                mySheet.deleteRule(0);
             });
-            photo.ondragstart = () => false;
+            photo.ondragstart = () => false;*/
+            createObject('mama', 'mamadeira.png', 'mamadeiraS.png', 50, 'audio.mp3', 0, 0, 400, 100);
          });
-         function registerClass(className, animationName){
+         function startTouch(event){
+            console.log('start');
+            //refX = event.clientX;  for mouse
+            //refY = event.clientY;  for mouse
+            playSound('touch.mp3');
+            let element = $(event.target.id);
+            refX = event.changedTouches[0].clientX;
+            refY = event.changedTouches[0].clientY;
+            initX = parseInt(window.getComputedStyle(element).left, 10);
+            initY = parseInt(window.getComputedStyle(element).top, 10);
+            moving = true;
+         }
+         function moveTouch(event){
+            console.log('move');
+            if(moving === true){
+               let element = $(event.target.id);
+               //element.style.left = (initX + event.clientX - refX) + 'px';  for mouse
+               //element.style.top = (initY + event.clientY - refY) + 'px';  for mouse
+               element.style.left = (initX + event.changedTouches[0].clientX - refX) + 'px';
+               element.style.top = (initY + event.changedTouches[0].clientY - refY) + 'px';
+            }
+         }
+         function endTouch(event){
+            console.log('end');
+            moving = false;
+            let element = $(event.target.id);
+            let x = parseInt(window.getComputedStyle(element).left, 10);
+            let y = parseInt(window.getComputedStyle(element).top, 10);
+            if(distanceBetweenPoints(x, y, parseInt(element.dataset.successX, 10), parseInt(element.dataset.successY, 10)) > 30){
+               registerAnimation(`${event.target.id}-animation`, parseInt(window.getComputedStyle(element).left, 10), parseInt(window.getComputedStyle(element).top, 10), initX, initY);
+               registerClassAnimation(`${event.target.id}-animation-class`, `${event.target.id}-animation`);
+               addAnimation(element, `${event.target.id}-animation-class`, initX, initY);
+            }else{ // sucess
+               registerAnimation(`${event.target.id}-animation`, parseInt(window.getComputedStyle(element).left, 10), parseInt(window.getComputedStyle(element).top, 10), parseInt(element.dataset.successX, 10), parseInt(element.dataset.successY, 10));
+               registerClassAnimation(`${event.target.id}-animation-class`, `${event.target.id}-animation`);
+               addAnimation(element, `${event.target.id}-animation-class`, parseInt(element.dataset.successX, 10), parseInt(element.dataset.successY, 10));
+               element.removeEventListener('touchstart', startTouch, false);
+               element.removeEventListener('touchend', endTouch, false);
+               element.removeEventListener('touchmove', moveTouch, false);
+               playSound(element.dataset.soundSuccess);
+            }
+         }
+         function registerClassAnimation(className, animationName){
             let style = `.${className}{
                animation-duration:0.4s;
                animation-name:${animationName};
                animation-fill-mode:none;
+               z-index:1;
             }`;
-            let mySheet = document.getElementById('animation').sheet;
+            let mySheet = $('animation').sheet;
             return mySheet.insertRule(style);
          }
          function registerAnimation(name, currentLeft, currentTop, newLeft, newTop){
@@ -94,7 +98,7 @@
                   top:${newTop}px;
                }
             }`;
-            let mySheet = document.getElementById('animation').sheet;
+            let mySheet = $('animation').sheet;
             mySheet.insertRule(style);
          }
          function addAnimation(element, className, newLeft, newTop){
@@ -111,6 +115,52 @@
             var sound = new Audio(name);
             sound.addEventListener('canplaythrough', () => sound.play());
          }
+         function $(id){
+            return document.getElementById(id);
+         }
+         /*
+         imgName: nome da imagem, deve ser único e será usado como base para a definição das classes CSS.
+         imgSrc: endereço da imagem do objeto.
+         imgShadowSrc: endereço da imagem da sombra do objeto.
+         imgWidth: largura da imagem do objeto e da sombra
+         soundSuccessSrc: endereço do áudio que será tocado em caso de sucesso.
+         startX: Posição inicial da imagem do objeto no eixo X. 
+         startY: Posição inicial da imagem do objeto no eixo Y.
+         endX: Posição da imagem da sombra do objeto no eixo X.
+         endY: Posição da imagem da sombra do objeto no eixo Y.
+         */
+         function createObject(imgName, imgSrc, imgShadowSrc, imgWidth, soundSuccessSrc, startX, startY, endX, endY){
+            let object = document.createElement('img');
+            let shadow = document.createElement('img');
+            object.setAttribute('src', imgSrc);
+            object.setAttribute('id', imgName);
+            object.setAttribute('data-success-x', endX);
+            object.setAttribute('data-success-y', endY);
+            object.setAttribute('data-sound-success', soundSuccessSrc);
+            object.style.position = 'absolute';
+            object.style.top = `${startY}px`;
+            object.style.left = `${startX}px`;
+            object.style.width = `${imgWidth}px`;
+            object.style.zIndex = 1;
+            object.addEventListener('touchstart', startTouch);
+            object.addEventListener('touchend', endTouch);
+            object.addEventListener('touchmove', moveTouch);
+            object.addEventListener('animationend', e => {
+               let element = $(e.target.id);
+               element.classList.remove(`${event.target.id}-animation-class`);
+               let mySheet = $('animation').sheet;
+               mySheet.deleteRule(0);
+               mySheet.deleteRule(0);
+            });
+            object.ondragstart = () => false;
+            shadow.setAttribute('src', imgShadowSrc);
+            shadow.style.position = 'absolute';
+            shadow.style.top = `${endY}px`;
+            shadow.style.left = `${endX}px`;
+            shadow.style.width = `${imgWidth}px`;
+            $('wrap').appendChild(object);
+            $('wrap').appendChild(shadow);
+         }
       </script>
       <title>Jogo</title>
       <style id="animation"></style>
@@ -120,6 +170,7 @@
             border:0;
             margin:0;
             padding:0;
+            user-select:none;
             overscroll-behavior-x:none;
             overscroll-behavior-y:none;
          }
@@ -135,28 +186,28 @@
             font-size:15px;
             overflow:hidden;
          }
-         #photo{
-            position:absolute;
+         #cover{
+            position:fixed;
             top:0;
             left:0;
-            width:50px;
-            z-index:500;
-         }
-         #destination{
-            width:50px;
-            height:127px;
-            border:1px dotted gray;
-            position:absolute;
-            top:100px;
-            left:400px;
-            !z-index:5010;
+            z-index:2;
+            width:100vw;
+            height:100vh;
+            padding:0;
+            margin:0;
+            border:none;
+            box-sizing:border-box;
+            background:green;
+            font-size:45px;
+            color:white;
+            overflow:hidden;
+            line-height:100vh;
+            text-align:center;
          }
       </style>
    </head>
    <body>
-      <div id="wrap">
-         <img id="photo" src="mamadeira.png"/>
-         <div id="destination"></div>
-      </div>
+      <div id="wrap"></div>
+      <div id="cover" onclick="this.style.display = 'none'; wrap.requestFullscreen();">Toque para iniciar</div>
    </body>
 </html>
