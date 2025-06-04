@@ -4,18 +4,15 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
       <!--<link rel="stylesheet" href="style.css">-->
-      <link rel="icon" href="favicon.png" type="image/png">
+      <!--<link rel="icon" href="favicon.png" type="image/png">-->
       <!--<script src="auth.js"></script>-->
       <script>
+         "use strict";
          var step = 0;
          var stepQuantity = 0;
          window.addEventListener('load', event => { 
             /*Gere uma imagem ilustrativa, tipo animação, de um cão. As linhas devem ser uniformes e definidas. As cores devem ser uniformes. O fundo por trás da imagem deve ser preenchido por uma cor uniforme que não faça parte do desenho.*/
             $('cover').addEventListener('click', start);
-            $('ok').addEventListener('touch', () => {
-               $('wrap').style.display = 'block';
-               $('alert').style.display = 'none';
-            });
             loadNewLevel();
          });
          function startTouch(event){
@@ -23,7 +20,7 @@
             let element = $(event.target.id);
             element.dataset.refX = event.changedTouches[0].clientX;
             element.dataset.refY = event.changedTouches[0].clientY;
-            element.style.zIndex = 2;
+            element.style.zIndex = 1;
             playSound('touch.mp3');
             element.dataset.moving = 'yes';
             event.preventDefault();
@@ -67,7 +64,7 @@
                   success();
                }
             }
-            element.style.zIndex = 1;
+            element.style.zIndex = 'auto';
          }
          function registerClassAnimation(className, animationName){
             let style = `.${className}{
@@ -80,7 +77,7 @@
             return mySheet.insertRule(style);
          }
          function registerAnimation(name, currentLeft, currentTop, newLeft, newTop){
-            let = style = `@keyframes ${name}{
+            let style = `@keyframes ${name}{
                from{
                   left:${currentLeft}px;
                   top:${currentTop}px;
@@ -148,7 +145,6 @@
             shadow.style.top = `${endY}px`;
             shadow.style.left = `${endX}px`;
             shadow.style.width = `${imgWidth}px`;
-            shadow.style.zIndex = 1;
             shadow.style.filter = 'contrast(0%) opacity(0.4)';
             $('wrap').appendChild(object);
             $('wrap').appendChild(shadow);
@@ -166,8 +162,10 @@
             });
          }
          function success(){
-            $('alert').style.display = 'block';
-            $('wrap').style.display = 'none';
+            //$('alert').style.display = 'block';
+            $('alert').showModal();
+            //$('alert').style.zIndex = 1000;
+            //$('wrap').style.display = 'none';
             stepQuantity = 0;
             step = 0;
             removeAll();
@@ -195,6 +193,7 @@
       <style>
          html, body{
             overflow:hidden;
+            position:relative;
             border:0;
             margin:0;
             padding:0;
@@ -251,12 +250,8 @@
             font-size:50px;
          }
          #alert{
-            display:none;
-            position:absolute;
-            top:0;
-            left:0;
-            width:100vw;
-            height:100vh;
+            width:100%;
+            height:100%;
             padding:0;
             padding-top:50px;
             margin:0;
@@ -268,7 +263,10 @@
             font-weight:bold;
             line-height:60px;
          }
-         #ok{
+         #alert::backdrop{
+            background:white;
+         }
+         input{
             width:250px;
             height:40px;
             padding:0;
@@ -283,10 +281,10 @@
    <body>
       <div id="wrap"></div>
       <div id="cover">INICIAR</div>
-      <div id="alert">
+      <dialog id="alert">
          <span class="star">★★★★★</span><br>
          <span class="coongrat">Parabéns!</span><br>
-         <input type="button" id="ok" value="Continuar">
-      </div>
+         <input type="button" value="Continuar" onclick="$('alert').close()">
+      </dialog>
    </body>
 </html>
