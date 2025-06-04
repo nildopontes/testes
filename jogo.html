@@ -12,6 +12,10 @@
          window.addEventListener('load', event => { 
             /*Gere uma imagem ilustrativa, tipo animação, de um cão. As linhas devem ser uniformes e definidas. As cores devem ser uniformes. O fundo por trás da imagem deve ser preenchido por uma cor uniforme que não faça parte do desenho.*/
             $('cover').addEventListener('click', start);
+            $('ok').addEventListener('touch', () => {
+               $('wrap').style.display = 'block';
+               $('alert').style.display = 'none';
+            });
             loadNewLevel();
          });
          function startTouch(event){
@@ -158,10 +162,12 @@
                   });
                }
                $('cover').style.display = 'none';
+               $('wrap').style.display = 'block';
             });
          }
          function success(){
-            alert('Parabéns! Você venceu!'); // Exibir uma tela amigável
+            $('alert').style.display = 'block';
+            $('wrap').style.display = 'none';
             stepQuantity = 0;
             step = 0;
             removeAll();
@@ -192,6 +198,8 @@
             border:0;
             margin:0;
             padding:0;
+            width:100vw;
+            height:100vh;
             overscroll-behavior-x:none;
             overscroll-behavior-y:none;
             font-family:Helvetica;
@@ -200,7 +208,8 @@
             user-select:none;
          }
          #wrap{
-            position:relative;
+            display:none;
+            position:absolute;
             width:100vw;
             height:100vh;
             padding:0;
@@ -215,10 +224,9 @@
             position:absolute;
          }
          #cover{
-            position:fixed;
+            position:absolute;
             top:0;
             left:0;
-            z-index:2;
             width:100vw;
             height:100vh;
             padding:0;
@@ -234,11 +242,51 @@
             text-align:center;
             font-weight:bold;
          }
+         .star{
+            color:#FFD700;
+            font-size:50px;
+         }
+         .congrat{
+            color:#008000;
+            font-size:50px;
+         }
+         #alert{
+            display:none;
+            position:absolute;
+            top:0;
+            left:0;
+            width:100vw;
+            height:100vh;
+            padding:0;
+            padding-top:50px;
+            margin:0;
+            border:none;
+            box-sizing:border-box;
+            background:white;
+            overflow:hidden;
+            text-align:center;
+            font-weight:bold;
+            line-height:60px;
+         }
+         #ok{
+            width:250px;
+            height:40px;
+            padding:0;
+            margin:0;
+            border:none;
+            color:white;
+            background:#32CD32;
+         }
       </style>
       <title>Jogo</title>
    </head>
    <body>
       <div id="wrap"></div>
       <div id="cover">INICIAR</div>
+      <div id="alert">
+         <span class="star">★★★★★</span><br>
+         <span class="coongrat">Parabéns!</span><br>
+         <input type="button" id="ok" value="Continuar">
+      </div>
    </body>
 </html>
