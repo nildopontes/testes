@@ -21,7 +21,7 @@
             let element = $(event.target.id);
             element.dataset.refX = event.changedTouches[0].clientX;
             element.dataset.refY = event.changedTouches[0].clientY;
-            element.style.zIndex = 1;
+            element.style.zIndex = 2;
             playSound('touch.mp3');
             element.dataset.moving = 'yes';
             event.preventDefault();
@@ -65,7 +65,7 @@
                   success();
                }
             }
-            element.style.zIndex = 'auto';
+            element.style.zIndex = 1;
          }
          function registerClassAnimation(className, animationName){
             let style = `.${className}{
@@ -273,3 +273,4 @@
       </dialog>
    </body>
 </html>
+
