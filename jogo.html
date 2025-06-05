@@ -12,6 +12,7 @@
          var stepQuantity = 0;
          window.addEventListener('load', event => { 
             /*Gere uma imagem ilustrativa, tipo animação, de um cão. As linhas devem ser uniformes e definidas. As cores devem ser uniformes. O fundo por trás da imagem deve ser preenchido por uma cor uniforme que não faça parte do desenho.*/
+            $('cover').showModal();
             $('cover').addEventListener('click', start);
             loadNewLevel();
          });
@@ -157,15 +158,11 @@
                      /*Decidir aqui o que fazer se for necessário girar a tela e o acesso for negado*/
                   });
                }
-               $('cover').style.display = 'none';
-               $('wrap').style.display = 'block';
+               $('cover').close();
             });
          }
          function success(){
-            //$('alert').style.display = 'block';
             $('alert').showModal();
-            //$('alert').style.zIndex = 1000;
-            //$('wrap').style.display = 'none';
             stepQuantity = 0;
             step = 0;
             removeAll();
@@ -176,10 +173,10 @@
             objects.forEach(obj => obj.remove());
          }
          function genStr(){ // for test
-            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
             let resultado = '';
             for(let i = 0; i < 5; i++){
-              resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+              resultado += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             return resultado;
          }
@@ -206,8 +203,15 @@
          *{
             user-select:none;
          }
+         dialog{
+            min-width:100vw;
+            min-height:100vh;
+            padding:0;
+            margin:0;
+            border:none;
+            overflow:hidden;
+         }
          #wrap{
-            display:none;
             position:absolute;
             width:100vw;
             height:100vh;
@@ -215,7 +219,8 @@
             margin:0;
             border:none;
             box-sizing:border-box;
-            background:white;
+            background:#ffffff;
+            background:radial-gradient(circle,rgba(255, 255, 255, 1) 0%, rgba(148, 187, 233, 1) 100%);
             font-size:15px;
             overflow:hidden;
          }
@@ -223,20 +228,10 @@
             position:absolute;
          }
          #cover{
-            position:absolute;
-            top:0;
-            left:0;
-            width:100vw;
-            height:100vh;
-            padding:0;
-            margin:0;
-            border:none;
-            box-sizing:border-box;
-            background:url('splash4.png');
+            background:url('splash5.png');
             background-position:center;
             font-size:45px;
             color:green;
-            overflow:hidden;
             line-height:100vh;
             text-align:center;
             font-weight:bold;
@@ -250,21 +245,11 @@
             font-size:50px;
          }
          #alert{
-            width:100%;
-            height:100%;
-            padding:0;
             padding-top:50px;
-            margin:0;
-            border:none;
-            box-sizing:border-box;
             background:white;
-            overflow:hidden;
             text-align:center;
             font-weight:bold;
             line-height:60px;
-         }
-         #alert::backdrop{
-            background:white;
          }
          input{
             width:250px;
@@ -280,7 +265,7 @@
    </head>
    <body>
       <div id="wrap"></div>
-      <div id="cover">INICIAR</div>
+      <dialog id="cover">INICIAR</dialog>
       <dialog id="alert">
          <span class="star">★★★★★</span><br>
          <span class="coongrat">Parabéns!</span><br>
